@@ -12,7 +12,7 @@ Refined by: ORGANIZATIONS-ENHANCED: ( UNIVERSITY OF BASEL ) `, 5625 hits
 
 ### PubMed
 1. Search ` biozentrum `, 5626 hits
-2. Save as `raw/savedrecs_x-y.ciw` via PubMed format option. `.csv` export fails.
+2. Save as `pubmed-biozentrum-set_x-y.txt` via PubMed format option. `.csv` export fails.
 
 ## Deduplication
 1. Import all files into Endnote
