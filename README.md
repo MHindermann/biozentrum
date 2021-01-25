@@ -3,7 +3,7 @@
 ## Metadata harvesting
 ### Scopus / 20210125
 1. Search `ALL ( basel )  AND  ( LIMIT-TO ( AF-ID ,  "Biozentrum, Universität Basel"   60015184 ) ) `
-2. Export as `raw/scopus_x-y.csv` in slices of 2000 records with all available information.
+2. Export as `raw/scopus_x-y.ris` in slices of ~2000 records with all available information.
 
 ### Web of Science / 20210125
 1. Search ` ADDRESS: (biozentrum)
