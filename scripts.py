@@ -48,7 +48,6 @@ class _Utility:
         """ Bla
         :param file_path: complete path to file including filename and extension
         :param save_path: complete path to save folder including filename without extension
-        :param clean:
         """
         file = cls.load_xml(file_path)
 
