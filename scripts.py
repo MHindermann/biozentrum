@@ -15,14 +15,17 @@ class _Utility:
     """ A collection of utility functions. """
 
     @classmethod
-    def load_file(cls,
-                  file_path: str) -> list:
-        """ Load a file.
+    def load_xml(cls,
+                 file_path: str) -> list:
+        """ Load XML file.
+
+        Superfluous information from Endnote is removed.
+
         :param file_path: complete path to file including filename and extension
         """
 
         with open(file_path, encoding="utf-8") as file:
-            loaded = load(file)
+            loaded = xmltodict.parse(file.read().replace('<style face="normal" font="default" size="100%">', "").replace('</style>', ""))
 
             return loaded
 
@@ -41,20 +44,16 @@ class _Utility:
     @classmethod
     def xml2json(cls,
                  file_path: str,
-                 save_path: str,
-                 clean: bool = True) -> None:
+                 save_path: str) -> None:
         """ Bla
-        :param file_path:
-        :param save_path:
+        :param file_path: complete path to file including filename and extension
+        :param save_path: complete path to save folder including filename without extension
         :param clean:
         """
+        file = cls.load_xml(file_path)
 
-        file = cls.load_file(file_path)
+        cls.save_json(file, save_path)
 
-        if clean:
-            pass
 
-        converted = xmltodict.parse(file)
-
-        cls.save_json(converted, save_path)
-
+#
+_Utility.xml2json(DIR + "/refined/deduplicated.xml", DIR + "/refined/deduplicated.json")
