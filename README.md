@@ -19,3 +19,4 @@ Refined by: ORGANIZATIONS-ENHANCED: ( UNIVERSITY OF BASEL ) `, 5625 hits
 2. Import Web of Science files (via multi-filter option).
 3. Import PubMed files (via multi-filter option).
 4. Run "find duplicates", remove 5803 records. But a quick manual check reveals that many duplicates have been missed.
+5. Manual deduplication removes an additional 1720 records; the remaining 10115 records are saved as `refined/deduplicated.enlx`.
