@@ -53,7 +53,3 @@ class _Utility:
         file = cls.load_xml(file_path)
 
         cls.save_json(file, save_path)
-
-
-#
-_Utility.xml2json(DIR + "/refined/deduplicated.xml", DIR + "/refined/deduplicated.json")
