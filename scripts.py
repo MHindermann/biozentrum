@@ -34,6 +34,7 @@ class _Utility:
                   data: Union[List, Dict],
                   file_path: str) -> None:
         """ Save data as JSON file.
+        
         :param data: the data to be saved
         :param file_path: complete path to file including filename and extension
         """
@@ -45,10 +46,10 @@ class _Utility:
     def xml2json(cls,
                  file_path: str,
                  save_path: str) -> None:
-        """ Bla
+        """ Convert XML file to JSON file.
+        
         :param file_path: complete path to file including filename and extension
         :param save_path: complete path to save folder including filename without extension
-        :param clean:
         """
         file = cls.load_xml(file_path)
 
