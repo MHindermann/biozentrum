@@ -141,6 +141,4 @@ class _Keywords:
         histogram = _Keywords.make_histogram(clean_keywords)
         _Utility.save_json(histogram, save_path)
 
-
-_Keywords.slices2histogram(DIR + "/refined/20210128/deduplicated_2011-2021.json",
-                           save_path=DIR + "/refined/20210128/histogram_2011-2021.json")
+        
