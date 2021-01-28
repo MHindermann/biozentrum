@@ -14,7 +14,7 @@ Refined by: ORGANIZATIONS-ENHANCED: ( UNIVERSITY OF BASEL ) `, 5625 hits
 1. Search ` biozentrum `, 5626 hits
 2. Save as `pubmed-biozentrum-set_x-y.txt` via PubMed format option. `.csv` export fails.
 
-### Deduplication with Endnote
+## Deduplication with Endnote
 1. Import Scopus files (reference manager option).
 2. Import Web of Science files (via multi-filter option).
 3. Import PubMed files (via multi-filter option).
@@ -23,7 +23,7 @@ Refined by: ORGANIZATIONS-ENHANCED: ( UNIVERSITY OF BASEL ) `, 5625 hits
 6. The Endnote XML export format is unwieldy; more importantly, it is not correctly parsed by OpenRefine. We can amend this by running `_Utility.xml2json(DIR + "/refined/deduplicated.xml", DIR + "/refined/deduplicated.json")`; the output is saved as `refined/deduplicated.json`.
 7. Declutter `deduplicated.json` in OpenRefine (remove empty columns, adapt column names, etc.); export data in decade-slices as `.csv` to `refined/20210128` and convert to `.json`.
 
-### Word cloud based on keywords
+## Word cloud based on keywords
 1. Due to the deduplication process different kinds of keywords can no longer be distinguished. 
 2. We can get an approximation of a word cloud by means of a histogram. Since the given keywords are messy (different ways of spelling one term, capitalization, etc.) we need to clean them first. To create a histogram for arbitrary slices of records (here the slices by decade saved in `refined/20210128`) do this:
    ```
