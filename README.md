@@ -35,6 +35,7 @@ Refined by: ORGANIZATIONS-ENHANCED: ( UNIVERSITY OF BASEL ) `, 5625 hits
                            save_path=DIR + "/refined/20210128/histogram_1971-2021.json")
    ```
 Preleminary results can be found here: `refined/20210128/histogram_summary.xlsx`. Not yet implemented:  
+
 3. So far artifacts such as "article", "priority journal", etc. have not been removed from the keywords.  
 4. We might also want to unify the singular and plural of one and the same keyword.  
 5. We might also want to map each keyword to a keyword from a controlled vocabulary in order to prevent semantic duplications. However, this is more involved due to the prevalence of compound keywords such as "Mechanistic Target of Rapamycin Complex 2/genetics/*metabolism" which require some more care. So this step is skipped for now.
