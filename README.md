@@ -14,10 +14,16 @@ Refined by: ORGANIZATIONS-ENHANCED: ( UNIVERSITY OF BASEL ) `, 5625 hits
 1. Search ` biozentrum `, 5626 hits
 2. Save as `pubmed-biozentrum-set_x-y.txt` via PubMed format option. `.csv` export fails.
 
-## Deduplication with Endnote
+### Deduplication with Endnote
 1. Import Scopus files (reference manager option).
 2. Import Web of Science files (via multi-filter option).
 3. Import PubMed files (via multi-filter option).
 4. Run "find duplicates", remove 5803 records. But a quick manual check reveals that many duplicates have been missed.
 5. Manual deduplication removes an additional 1720 records; the remaining 10115 records are saved as `refined/deduplicated.enlx` resp. `refined/deduplicated.xml`.
 6. The Endnote XML export format is unwieldy; more importantly, it is not correctly parsed by OpenRefine. We can amend this by running `_Utility.xml2json(DIR + "/refined/deduplicated.xml", DIR + "/refined/deduplicated.json")`; the output is saved as `refined/deduplicated.json`.
+
+### Word cloud based on keywords
+1. Due to the deduplication process different kinds of keywords can no longer be distinguished. 
+2. We can get an approximation of a word cloud by means of a histogram. Since the given keywords are messy (different ways of spelling one term, capitalization, etc.) we need to clean them first. 
+3. We might also want to unify the singular and plural of one and the same keyword.
+4. We might also want to map each keyword to a keyword from a controlled vocabulary in order to prevent semantic duplications. However, this is more involved due to the prevalence of compound keywords such as "Mechanistic Target of Rapamycin Complex 2/genetics/*metabolism" which require some more care. So this step is skipped for now.
