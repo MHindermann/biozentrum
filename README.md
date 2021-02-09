@@ -23,7 +23,7 @@ Refined by: ORGANIZATIONS-ENHANCED: ( UNIVERSITY OF BASEL ) `, 5625 hits
 6. The Endnote XML export format is unwieldy; more importantly, it is not correctly parsed by OpenRefine. We can amend this by running `_Utility.xml2json(DIR + "/refined/deduplicated.xml", DIR + "/refined/deduplicated.json")`; the output is saved as `refined/deduplicated.json`.
 7. Declutter `deduplicated.json` in OpenRefine (remove empty columns, adapt column names, etc.); export data in decade-slices as `.csv` to `refined/20210128` and convert to `.json`.
 
-## Word cloud based on keywords
+## Word cloud based on keywords / 20210128
 1. Due to the deduplication process different kinds of keywords can no longer be distinguished. 
 2. We can get an approximation of a word cloud by means of a histogram. Since the given keywords are messy (different ways of spelling one term, capitalization, etc.) we need to clean them first. To create a histogram for arbitrary slices of records (here the slices by decade saved in `refined/20210128`) do this:
    ```
@@ -39,3 +39,23 @@ Preleminary results can be found here: `refined/20210128/histogram_summary.xlsx`
 3. So far artifacts such as "article", "priority journal", etc. have not been removed from the keywords.  
 4. We might also want to unify the singular and plural of one and the same keyword.  
 5. We might also want to map each keyword to a keyword from a controlled vocabulary in order to prevent semantic duplications. However, this is more involved due to the prevalence of compound keywords such as "Mechanistic Target of Rapamycin Complex 2/genetics/*metabolism" which require some more care. So this step is skipped for now.
+
+## Word cloud based on title + abstract / 20210209
+1. We build histograms based on title and, if available, abstract based on the slices by decade saved in 
+   `refined/20210128`. In order to take into account for 
+   distributed 
+   terms, we try out monograms, bigrams and trigrams. For example like so for a bigram over all five decades:
+   ```
+   _Data.save_text2ngram(DIR + "/refined/20210128/deduplicated_1971-1981.json",
+                         DIR + "/refined/20210128/deduplicated_1981-1991.json",
+                         DIR + "/refined/20210128/deduplicated_1991-2001.json",
+                         DIR + "/refined/20210128/deduplicated_2001-2011.json",
+                         DIR + "/refined/20210128/deduplicated_2011-2021.json",
+                         n=2,
+                         save_path=DIR + "/refined/20210209/2gram_1971-2021.json")
+   ```
+   The n-grams are saved under `/refined/20210209`.
+2. The n-grams are more or less clean (no stopwords, some administrative terms have been excluded, see `_Data.
+   text2ngram` 
+   for details).
+3. A summary of all n-grams over all decades can be found here: `/refined/20210209/n-grams_summary.xlsx`   

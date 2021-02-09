@@ -3,6 +3,7 @@ from typing import List, Optional, Dict, Union, Tuple
 from json import load, dump
 import os.path
 import xmltodict
+import  nltk
 
 
 DIR = os.path.dirname(__file__)
@@ -141,4 +142,123 @@ class _Keywords:
         histogram = _Keywords.make_histogram(clean_keywords)
         _Utility.save_json(histogram, save_path)
 
-        
+
+class _Data:
+    """ A collection of data methods. """
+
+    @classmethod
+    def save_text2ngram(cls,
+                        *file_paths: str,
+                        n: int,
+                        save_path: str):
+        """ Similar to _Data.text2ngram.
+
+        :param file_paths: complete paths to file including filename and extension
+        :param n: 0 < n < 4
+        :param save_path: complete path to save folder including filename and extension
+        """
+
+        output = cls.text2ngram(*file_paths, n=n)
+        new_output = []
+        if n == 1:
+            for key in output.keys():
+                new_output.append({"n-gram": key, "occurrences": output.get(key)})
+            _Utility.save_json(new_output, save_path)
+        else:
+            for key in output.keys():
+                new_output.append({"n-gram": " ".join(key), "occurrences": output.get(key)})
+            _Utility.save_json(new_output, save_path)
+
+    @classmethod
+    def text2ngram(cls,
+                   *file_paths: str,
+                   n: int) -> Dict:
+        """ Turn text from files into histogram of ngram.
+
+        :param file_paths: complete paths to file including filename and extension
+        :param n: 0 < n < 4
+        """
+
+        assert (0 < n < 4)
+
+        if n == 1:
+            return cls.text2histogram(*file_paths)
+
+        text = cls.extract_text(*file_paths)
+
+        stopwords = nltk.corpus.stopwords.words("english")
+        punctuation = [".", ",", ")", "(", ":", ";", "©", "%"]
+        publishers = ["blackwell",
+                      "rights",
+                      "reserved",
+                      "publishing",
+                      "american",
+                      "press",
+                      "inc.",
+                      "society",
+                      "wiley",
+                      "copyright"]
+        stopwords = stopwords + punctuation + publishers
+
+        clean_text = []
+        for word in nltk.tokenize.word_tokenize(text):
+            if word.lower() not in set(stopwords):
+                clean_text.append(word)
+
+        if n == 2:
+            return nltk.probability.FreqDist(nltk.bigrams(clean_text))
+        if n == 3:
+            return nltk.probability.FreqDist(nltk.trigrams(clean_text))
+
+    @classmethod
+    def text2histogram(cls,
+                       *file_paths: str) -> Dict:
+        """ Turn text from files into histogram.
+
+        :param file_paths: complete paths to file including filename and extension
+        """
+        nltk.download('punkt')
+        nltk.download('stopwords')
+        text = cls.extract_text(*file_paths)
+
+        stopwords = nltk.corpus.stopwords.words("english")
+        punctuation = [".", ",", ")", "(", ":", ";", "©", "%"]
+        numbers = ["1", "2", "3"]
+        publishers = ["blackwell", "rights"]
+        stopwords = stopwords + punctuation + numbers + publishers
+
+        histogram = nltk.probability.FreqDist()
+
+        for word in nltk.tokenize.word_tokenize(text):
+            if word.lower() not in set(stopwords):
+                histogram[word.lower()] += 1
+
+        return histogram
+
+    @classmethod
+    def extract_text(cls,
+                     *file_paths: str) -> str:
+        """ Extract text per item from JSON file.
+
+        A text is the concatenation of title and an abstract (if any).
+
+        :param file_paths: complete paths to file including filename and extension
+        """
+
+        texts = []
+        for file_path in file_paths:
+            data = _Utility.load_json(file_path)
+            print(f"Working on {file_path}...", end=" ")
+            for item in data:
+                texts.append(item.get("title") + " " + item.get("abstract"))
+            print(" done.")
+
+        return " ".join(texts)
+
+_Data.save_text2ngram(DIR + "/refined/20210128/deduplicated_1971-1981.json",
+                      DIR + "/refined/20210128/deduplicated_1981-1991.json",
+                      DIR + "/refined/20210128/deduplicated_1991-2001.json",
+                      DIR + "/refined/20210128/deduplicated_2001-2011.json",
+                      DIR + "/refined/20210128/deduplicated_2011-2021.json",
+                      n=1,
+                      save_path=DIR + "/refined/20210209/1gram_1971-2021.json")
