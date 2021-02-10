@@ -42,7 +42,7 @@ Preleminary results can be found here: `refined/20210128/histogram_summary.xlsx`
 
 ## Word cloud based on title + abstract / 20210209
 1. We build histograms based on title and, if available, abstract based on the slices by decade saved in 
-   `refined/20210128`. In order to take into account for 
+   `/refined/20210128`. In order to take into account
    distributed 
    terms, we try out monograms, bigrams and trigrams. For example like so for a bigram over all five decades:
    ```
