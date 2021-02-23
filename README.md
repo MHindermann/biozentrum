@@ -59,3 +59,12 @@ Preleminary results can be found here: `refined/20210128/histogram_summary.xlsx`
    text2ngram` 
    for details).
 3. A summary of all n-grams over all decades can be found here: `/refined/20210209/n-grams_summary.xlsx`   
+
+## Add "Biocenter" papers / 20210223
+1. Papers with a non-"Biozentrum" affiliation were skipped in the first metadata harvesting run. It seems that this approach misses out on too many papers, so we amend the query at PubMed:  
+`(Biozentrum[ad] OR Center for molecular life sciences[ad] OR Biocenter[ad]) AND (Basel[ad] OR Bâle[ad] OR Basle[ad])`  
+   This search yields 3763 results and is exported as `/refined/20210223/pubmed-biocenter-set_1974-2021.txt`.
+   
+2. We import these results into `/refined/deduplicated.enlx` with Endnote but discard duplicates to the effect of adding 870 new papers. We then performed a semi-manual deduplication, removing 250+ duplicates. The result is saved as `/refined/20210223/deduplicated.enlx` and contains 10843 items (as compared to the 10115 previous items)
+
+3. Unfortunately, the Endnote XML-export does not work (again); `_Utility.xml2json` bugs out and I cannot fix it. So we imported the Endnote data into Citavi and exported from there as `/refined/20210223/deduplicated_citavi.xml`; this is then converted to `/refined/20210223/deduplicated_citavi.json`.

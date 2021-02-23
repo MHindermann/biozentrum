@@ -255,10 +255,5 @@ class _Data:
 
         return " ".join(texts)
 
-_Data.save_text2ngram(DIR + "/refined/20210128/deduplicated_1971-1981.json",
-                      DIR + "/refined/20210128/deduplicated_1981-1991.json",
-                      DIR + "/refined/20210128/deduplicated_1991-2001.json",
-                      DIR + "/refined/20210128/deduplicated_2001-2011.json",
-                      DIR + "/refined/20210128/deduplicated_2011-2021.json",
-                      n=1,
-                      save_path=DIR + "/refined/20210209/1gram_1971-2021.json")
+
+_Utility.xml2json(DIR + "/refined/20210223/deduplicated_citavi.xml", DIR + "/refined/20210223/deduplicated_citavi.json")
