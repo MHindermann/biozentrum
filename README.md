@@ -68,3 +68,8 @@ Preleminary results can be found here: `refined/20210128/histogram_summary.xlsx`
 2. We import these results into `/refined/deduplicated.enlx` with Endnote but discard duplicates to the effect of adding 870 new papers. We then performed a semi-manual deduplication, removing 250+ duplicates. The result is saved as `/refined/20210223/deduplicated.enlx` and contains 10843 items (as compared to the 10115 previous items)
 
 3. Unfortunately, the Endnote XML-export does not work (again); `_Utility.xml2json` bugs out and I cannot fix it. So we imported the Endnote data into Citavi and exported from there as `/refined/20210223/deduplicated_citavi.xml`; this is then converted to `/refined/20210223/deduplicated_citavi.json`.
+
+## Redo n-grams for more complete metadata
+1. Slice `/refined/20210223/deduplicated_citavi.json` into 5 files by sorted decade with `_Data.extract_by_decade` and save in `/refined/20210301/metadata`.
+2. Create histograms of all combinations of: n-gram (0 < n < 4), files in decades, title versus title + abstract with `_Data.super_ngram`. The 3 * 5 * 2 = 30 files are saved in `/refined/20210301/ngrams`. The n-grams are no longer case-sensitive.
+3. A summary of the results can be found at `/refined/20210301/summary.xlsx`

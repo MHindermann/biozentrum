@@ -147,18 +147,60 @@ class _Data:
     """ A collection of data methods. """
 
     @classmethod
+    def get_publishers(cls) -> list:
+        """ Return list of publishers resp. related terms. """
+
+        publishers = [
+            "blackwell",
+            "rights",
+            "reserved",
+            "publishing",
+            "american",
+            "press",
+            "inc.",
+            "society",
+            "wiley",
+            "copyright",
+            "john",
+            "gmbh",
+            "verlag",
+            "wiley",
+            "wiley-vch",
+            "& co.",
+            "springer",
+            "nature limited",
+            "oxford",
+            "science+business media",
+            "license",
+            "author",
+            "macmillan",
+            "elsevier",
+            "ltd.",
+            "ltd",
+            "sons",
+            "kgaa",
+            "academic",
+            "credited",
+            "licence"
+        ]
+
+        return publishers
+
+    @classmethod
     def save_text2ngram(cls,
                         *file_paths: str,
                         n: int,
-                        save_path: str):
+                        save_path: str,
+                        include_abstract: bool = True) -> None:
         """ Similar to _Data.text2ngram.
 
         :param file_paths: complete paths to file including filename and extension
         :param n: 0 < n < 4
         :param save_path: complete path to save folder including filename and extension
+        :param include_abstract: toggle inclusion of abstract, defaults to True
         """
 
-        output = cls.text2ngram(*file_paths, n=n)
+        output = cls.text2ngram(*file_paths, n=n, include_abstract=include_abstract)
         new_output = []
         if n == 1:
             for key in output.keys():
@@ -172,38 +214,32 @@ class _Data:
     @classmethod
     def text2ngram(cls,
                    *file_paths: str,
-                   n: int) -> Dict:
+                   n: int,
+                   include_abstract: bool = True) -> Dict:
         """ Turn text from files into histogram of ngram.
 
         :param file_paths: complete paths to file including filename and extension
         :param n: 0 < n < 4
+        :param include_abstract: toggle inclusion of abstract, defaults to True
         """
 
         assert (0 < n < 4)
 
         if n == 1:
-            return cls.text2histogram(*file_paths)
+            return cls.text2histogram(*file_paths, include_abstract=include_abstract)
 
-        text = cls.extract_text(*file_paths)
+        text = cls.extract_text(*file_paths, include_abstract=include_abstract)
 
         stopwords = nltk.corpus.stopwords.words("english")
         punctuation = [".", ",", ")", "(", ":", ";", "©", "%"]
-        publishers = ["blackwell",
-                      "rights",
-                      "reserved",
-                      "publishing",
-                      "american",
-                      "press",
-                      "inc.",
-                      "society",
-                      "wiley",
-                      "copyright"]
+        publishers = cls.get_publishers()
         stopwords = stopwords + punctuation + publishers
 
         clean_text = []
         for word in nltk.tokenize.word_tokenize(text):
-            if word.lower() not in set(stopwords):
-                clean_text.append(word)
+            clean_word = _Keywords.clean_keyword(word)
+            if clean_word not in set(stopwords):
+                clean_text.append(clean_word)
 
         if n == 2:
             return nltk.probability.FreqDist(nltk.bigrams(clean_text))
@@ -212,19 +248,21 @@ class _Data:
 
     @classmethod
     def text2histogram(cls,
-                       *file_paths: str) -> Dict:
+                       *file_paths: str,
+                       include_abstract: bool = True) -> Dict:
         """ Turn text from files into histogram.
 
         :param file_paths: complete paths to file including filename and extension
+        :param include_abstract: toggle inclusion of abstract, defaults to True
         """
         nltk.download('punkt')
         nltk.download('stopwords')
-        text = cls.extract_text(*file_paths)
+        text = cls.extract_text(*file_paths, include_abstract=include_abstract)
 
         stopwords = nltk.corpus.stopwords.words("english")
         punctuation = [".", ",", ")", "(", ":", ";", "©", "%"]
         numbers = ["1", "2", "3"]
-        publishers = ["blackwell", "rights"]
+        publishers = cls.get_publishers()
         stopwords = stopwords + punctuation + numbers + publishers
 
         histogram = nltk.probability.FreqDist()
@@ -237,23 +275,82 @@ class _Data:
 
     @classmethod
     def extract_text(cls,
-                     *file_paths: str) -> str:
+                     *file_paths: str,
+                     include_abstract: bool = True) -> str:
         """ Extract text per item from JSON file.
 
         A text is the concatenation of title and an abstract (if any).
 
         :param file_paths: complete paths to file including filename and extension
+        :param include_abstract: toggle inclusion of abstract, defaults to True
         """
 
         texts = []
         for file_path in file_paths:
             data = _Utility.load_json(file_path)
-            print(f"Working on {file_path}...", end=" ")
             for item in data:
-                texts.append(item.get("title") + " " + item.get("abstract"))
-            print(" done.")
+                title = item.get("Title")
+                abstract = item.get("Abstract")
+                if include_abstract is True:
+                    try:
+                        texts.append(title + " " + abstract)
+                    except TypeError:
+                        texts.append(title)
+                else:
+                    texts.append(title)
 
         return " ".join(texts)
 
+    @classmethod
+    def extract_by_decade(cls,
+                       file_path: str):
+        """ Extract documents by decace and save the output as JSON.
 
-_Utility.xml2json(DIR + "/refined/20210223/deduplicated_citavi.xml", DIR + "/refined/20210223/deduplicated_citavi.json")
+        :param file_path: complete path to file including filename and extension, MUST be Citavi export
+        :return:
+        """
+
+        file = _Utility.load_json(file_path)
+        data = file.get("Documents").get("Document")
+
+        bin_1971 = []
+        bin_1982 = []
+        bin_1992 = []
+        bin_2002 = []
+        bin_2012 = []
+
+        for document in data:
+            try:
+                if int(document.get("Year")) < 1982:
+                    bin_1971.append(document)
+                elif int(document.get("Year")) < 1992:
+                    bin_1982.append(document)
+                elif int(document.get("Year")) < 2002:
+                    bin_1992.append(document)
+                elif int(document.get("Year")) < 2012:
+                    bin_2002.append(document)
+                else:
+                    bin_2012.append(document)
+            except TypeError:
+                continue
+
+        _Utility.save_json(bin_1971, DIR + "/refined/20210301/1971-1981.json")
+        _Utility.save_json(bin_1982, DIR + "/refined/20210301/1982-1991.json")
+        _Utility.save_json(bin_1992, DIR + "/refined/20210301/1992-2001.json")
+        _Utility.save_json(bin_2002, DIR + "/refined/20210301/2002-2011.json")
+        _Utility.save_json(bin_2012, DIR + "/refined/20210301/2012-2021.json")
+
+    @classmethod
+    def super_ngram(cls):
+        """ Save histograms of n-grams for all combinations. """
+
+        files = os.listdir(DIR + "/refined/20210301/metadata")
+        for file in files:
+            for n in [1, 2, 3]:
+                for include_abstract in [True, False]:
+                    print(f"Working on {n}gram_{include_abstract}_{file}...", end=" ")
+                    cls.save_text2ngram(DIR + f"/refined/20210301/metadata/{file}",
+                                        n=n,
+                                        save_path=DIR + f"/refined/20210301/ngrams/{n}gram_{include_abstract}_{file}",
+                                        include_abstract=include_abstract)
+                    print(" done.")
