@@ -77,4 +77,4 @@ Preleminary results can be found here: `refined/20210128/histogram_summary.xlsx`
 
 ## Add normalized histograms of n-grams / 20210315
 1. Let a histogram of n-grams be normalized iff there is at most 1 occurrence per n-gram per sample (i.e., text, based on title or abstract and title), implemented with `_Data.super_norm_ngram`. Normalization should take care of the bias that some n-grams might be mentioned multiple times in a single abstract (same for title albeit this probably rarely ever happens).
-2. The output is saved in `/refined/20210315/norm_ngrams`; a summary is available at `/refined/20210315/summary.xlsx`.
+2. The output is saved in `/refined/20210315/norm_ngrams`; a summary is available at `/refined/20210315/summary_normalized.xlsx`.
