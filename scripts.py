@@ -3,7 +3,7 @@ from typing import List, Optional, Dict, Union, Tuple
 from json import load, dump
 import os.path
 import xmltodict
-import  nltk
+import nltk
 
 
 DIR = os.path.dirname(__file__)
@@ -354,3 +354,82 @@ class _Data:
                                         save_path=DIR + f"/refined/20210301/ngrams/{n}gram_{include_abstract}_{file}",
                                         include_abstract=include_abstract)
                     print(" done.")
+
+    @classmethod
+    def super_norm_ngram(cls) -> None:
+        """ Save normalized histograms of n-grams for all combinations. """
+
+        files = os.listdir(DIR + "/refined/20210301/metadata")
+        for file in files:
+            for n in [1, 2, 3]:
+                for include_abstract in [True, False]:
+                    print(f"Working on {n}gram_{include_abstract}_{file}...", end=" ")
+                    data = _Utility.load_json(DIR + f"/refined/20210301/metadata/{file}")
+
+                    cum_ngram = dict()
+
+                    for item in data:
+                        text = []
+                        if include_abstract is True:
+                            try:
+                                text.append(item.get("Title") + " " + item.get("Abstract"))
+                            except TypeError:
+                                text.append(item.get("Title"))
+                        else:
+                            text.append(item.get("Title"))
+
+                        ngram = cls.norm_ngram(" ".join(text), n)
+                        for key in ngram.keys():
+                            if key in cum_ngram.keys():
+                                cum_ngram[key] += 1
+                            else:
+                                cum_ngram[key] = 1
+
+                    save_path = DIR + f"/refined/20210315/norm_ngrams/{n}gram_{include_abstract}_{file}"
+                    output = []
+                    for key in cum_ngram.keys():
+                        if type(key) is tuple:
+                            output.append({"n-gram": " ".join(key), "occurrences": cum_ngram.get(key)})
+                        else:
+                            output.append({"n-gram": key, "occurrences": cum_ngram.get(key)})
+                    _Utility.save_json(output, save_path)
+                    print("done")
+
+    @classmethod
+    def norm_ngram(cls, text: str, n: int) -> Dict:
+        """ Return normalized n-gram from text.
+
+        :param text: the text
+        :param n: 0 < n < 4
+        """
+
+        # define stopwords:
+        stopwords = nltk.corpus.stopwords.words("english")
+        punctuation = [".", ",", ")", "(", ":", ";", "©", "%"]
+        publishers = cls.get_publishers()
+        stopwords = stopwords + punctuation + publishers
+
+        # clean text:
+        clean_text = []
+        for word in nltk.tokenize.word_tokenize(text):
+            clean_word = _Keywords.clean_keyword(word)
+            if clean_word not in set(stopwords):
+                clean_text.append(clean_word)
+
+        # make ngram:
+        if n == 1:
+            ngram = nltk.probability.FreqDist()
+            for word in clean_text:
+                ngram[word] += 1
+        elif n == 2:
+            ngram = nltk.probability.FreqDist(nltk.bigrams(clean_text))
+        elif n == 3:
+            ngram = nltk.probability.FreqDist(nltk.trigrams(clean_text))
+        else:
+            raise TypeError
+
+        # normalize ngram:
+        for key in ngram.keys():
+            ngram[key] = 1
+
+        return ngram
