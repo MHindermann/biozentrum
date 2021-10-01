@@ -1,6 +1,6 @@
 # Data collection and preprocessing for Biozentrum jubilee publication
 
-Bibliometric analysis and data preprocessing for "50 years of research at the Biozentrum" on p. 42 of the 50 years Biozentrum Life Sciences jubilee publication, available at https://www.biozentrum.unibas.ch/de/about/biozentrum-auf-einen-blick/50-year-jubilee.
+Bibliometric analysis and data preprocessing for "50 years of research at the Biozentrum" on p. 40 of the 50 years Biozentrum Life Sciences jubilee publication, available at https://www.biozentrum.unibas.ch/de/about/biozentrum-auf-einen-blick/50-year-jubilee.
 
 ## Metadata harvesting
 ### Scopus / 20210125
