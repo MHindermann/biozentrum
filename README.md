@@ -1,4 +1,6 @@
-# Biozentrum
+# Data collection and preprocessing for Biozentrum jubilee publication
+
+Bibliometric analysis and data preprocessing for "50 years of research at the Biozentrum" on p. 42 of the 50 years Biozentrum Life Sciences jubilee publication, available at https://www.biozentrum.unibas.ch/de/about/biozentrum-auf-einen-blick/50-year-jubilee.
 
 ## Metadata harvesting
 ### Scopus / 20210125
@@ -73,7 +75,6 @@ Preleminary results can be found here: `refined/20210128/histogram_summary.xlsx`
 1. Slice `/refined/20210223/deduplicated_citavi.json` into 5 files sorted by decade with `_Data.extract_by_decade` and save in `/refined/20210301/metadata`.
 2. Create histograms of all combinations of: n-gram (0 < n < 4), files in decades, title versus title + abstract with `_Data.super_ngram`. The 3 * 5 * 2 = 30 files are saved in `/refined/20210301/ngrams`. The n-grams are no longer case-sensitive.
 3. A summary of the results can be found at `/refined/20210301/summary.xlsx`
-
 
 ## Add normalized histograms of n-grams / 20210315
 1. Let a histogram of n-grams be normalized iff there is at most 1 occurrence per n-gram per sample (i.e., text, based on title or abstract and title), implemented with `_Data.super_norm_ngram`. Normalization should take care of the bias that some n-grams might be mentioned multiple times in a single abstract (same for title albeit this probably rarely ever happens).
